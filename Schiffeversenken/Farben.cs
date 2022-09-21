@@ -64,6 +64,8 @@ namespace Schiffeversenken
                     break;
                 }
             }
+            
+            Mini.start();
         }
     }
 }
