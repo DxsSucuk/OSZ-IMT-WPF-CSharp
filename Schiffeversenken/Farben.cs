@@ -65,6 +65,7 @@ namespace Schiffeversenken
                 }
             }
             
+            Console.WriteLine();
             Mini.start();
         }
     }
