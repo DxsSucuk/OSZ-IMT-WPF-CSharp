@@ -8,26 +8,39 @@ namespace Schiffeversenken
 
         public static void start()
         {
+            int tries = 0;
             Console.ResetColor();
             variable = new Random().Next(1, 3);
-            Console.WriteLine("Errate die Zahl! (1-3)");
 
-            int choice = Convert.ToInt32(Console.ReadLine());
+            choice:
+            if (tries < 2)
+            {
+                Console.WriteLine("Errate die Zahl! (1-3)");
 
-            if (choice > 3 || choice < 1)
-            {
-                Console.WriteLine("Fehlerhafte eingabe!");
-            }
-            else
-            {
-                if (choice == variable)
+                int choice = Convert.ToInt32(Console.ReadLine());
+
+                if (choice > 3 || choice < 1)
                 {
-                    Console.WriteLine("Richtig erraten!");
+                    Console.WriteLine("Fehlerhafte eingabe!");
+                    goto choice;
                 }
                 else
                 {
-                    Console.WriteLine("Falsch!");
+                    if (choice == variable)
+                    {
+                        Console.WriteLine("Richtig erraten!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Falsch!");
+                        tries++;
+                        goto choice;
+                    }
                 }
+            }
+            else
+            {
+                Console.WriteLine("Leider verloren!");
             }
         }
     }
