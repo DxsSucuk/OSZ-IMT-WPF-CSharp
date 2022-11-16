@@ -4,7 +4,7 @@ namespace Schiffeversenken
 {
     class Eingabe
     {
-        static void Main(string[] args)
+        static void main(string[] args)
         {
             int[] positions = requestPositions();
             Console.WriteLine("Danke, dass Sie " + positions[1] + " und " + positions[0] + " eingegeben haben.");
