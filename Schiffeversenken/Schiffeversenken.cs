@@ -6,12 +6,12 @@ namespace Schiffeversenken
 {
     public class Schiffeversenken
     {
-        private static Player playerOne;
+        private static Player playerOne = new Player("test");
 
         public static void Main(String[] args)
         {
-            AskForName();
-            showCurrentMap();
+            ////AskForName();
+            ////showCurrentMap();
             AskForShipPositions();
             showCurrentMap();
         }
@@ -25,23 +25,23 @@ namespace Schiffeversenken
 
         public static void showCurrentMap()
         {
-            for (int y = 0; y < 10; y++)
+            for (int y = 0; y < 9; y++)
             {
-                for (int x = 0; x < 10; x++)
+                for (int x = 0; x < 9; x++)
                 {
                     if (playerOne.Schiffe.Any(c => c.Positionen[0] == y && c.Positionen[1] == x))
                         Console.BackgroundColor = ConsoleColor.Red;
                     else if (playerOne.Schiffe.Any(c =>
-                                 c.Positionen[0] < y && y - c.Positionen[0] <= c.Size && c.Positionen[2] == 4))
+                                 c.Positionen[0] < y && y - c.Positionen[0] >= c.FixedSize && c.Positionen[2] == 4 && c.Positionen[1] == x)) // Unten
                         Console.BackgroundColor = ConsoleColor.Red;
                     else if (playerOne.Schiffe.Any(c =>
-                                 c.Positionen[0] > y && c.Positionen[0] - y <= c.Size && c.Positionen[2] == 3))
+                                 c.Positionen[0] > y && c.Positionen[0] - y <= c.FixedSize && c.Positionen[2] == 3 && c.Positionen[1] == x)) // Oben
                         Console.BackgroundColor = ConsoleColor.Red;
                     else if (playerOne.Schiffe.Any(c =>
-                                 c.Positionen[1] > x && c.Positionen[1] - x <= c.Size && c.Positionen[2] == 1))
+                                 c.Positionen[1] > x && c.Positionen[1] - x <= c.FixedSize && c.Positionen[2] == 1 && c.Positionen[0] == y))
                         Console.BackgroundColor = ConsoleColor.Red;
                     else if (playerOne.Schiffe.Any(c =>
-                                 c.Positionen[0] < x && x - c.Positionen[0] <= c.Size && c.Positionen[2] == 2))
+                                 c.Positionen[1] < x && x - c.Positionen[1] <= c.FixedSize && c.Positionen[2] == 2 && c.Positionen[0] == y))
                         Console.BackgroundColor = ConsoleColor.Red;
                     else
                         Console.BackgroundColor = ConsoleColor.Green;
@@ -57,8 +57,9 @@ namespace Schiffeversenken
 
         public static void AskForShipPositions()
         {
-            Console.WriteLine("Wo soll das Schlachtschiff liegen?");
-            int[] positions = AskForPositions();
+            int[] positions;
+            /*Console.WriteLine("Wo soll das Schlachtschiff liegen?");
+            positions = AskForPositions();
             playerOne.Schiffe.Add(new Schiff("Schlachtschiff", 5, positions));
 
             Console.WriteLine("Wo soll das Kreuzer liegen?");
@@ -91,7 +92,7 @@ namespace Schiffeversenken
 
             Console.WriteLine("Wo soll das U-Boot liegen?");
             positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("U-Boot", 2, positions));
+            playerOne.Schiffe.Add(new Schiff("U-Boot", 2, positions));*/
 
             Console.WriteLine("Wo soll das U-Boot liegen?");
             positions = AskForPositions();
@@ -155,6 +156,11 @@ namespace Schiffeversenken
             public int Size
             {
                 get => _size;
+            }
+
+            public int FixedSize
+            {
+                get => _size - 1;
             }
         }
     }
