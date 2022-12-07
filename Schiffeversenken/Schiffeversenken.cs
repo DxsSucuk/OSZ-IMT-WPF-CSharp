@@ -25,9 +25,9 @@ namespace Schiffeversenken
 
         public static void showCurrentMap()
         {
-            for (int y = 0; y < 9; y++)
+            for (int y = 0; y < 10; y++)
             {
-                for (int x = 0; x < 9; x++)
+                for (int x = 0; x < 10; x++)
                 {
                     if (playerOne.Schiffe.Any(c => c.Positionen[0] == y && c.Positionen[1] == x))
                         Console.BackgroundColor = ConsoleColor.Red;
