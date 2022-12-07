@@ -29,23 +29,14 @@ namespace Schiffeversenken
             {
                 for (int x = 0; x < 10; x++)
                 {
-                    if (playerOne.Schiffe.Any(c => c.Positionen[0] == y && c.Positionen[1] == x))
+                    if (checkForColission(y, x))
+                    {
                         Console.BackgroundColor = ConsoleColor.Red;
-                    else if (playerOne.Schiffe.Any(c =>
-                                 c.Positionen[0] < y && y - c.Positionen[0] >= c.FixedSize && c.Positionen[2] == 4 && c.Positionen[1] == x)) // Unten
-                        Console.BackgroundColor = ConsoleColor.Red;
-                    else if (playerOne.Schiffe.Any(c =>
-                                 c.Positionen[0] > y && c.Positionen[0] - y <= c.FixedSize && c.Positionen[2] == 3 && c.Positionen[1] == x)) // Oben
-                        Console.BackgroundColor = ConsoleColor.Red;
-                    else if (playerOne.Schiffe.Any(c =>
-                                 c.Positionen[1] > x && c.Positionen[1] - x <= c.FixedSize && c.Positionen[2] == 1 && c.Positionen[0] == y))
-                        Console.BackgroundColor = ConsoleColor.Red;
-                    else if (playerOne.Schiffe.Any(c =>
-                                 c.Positionen[1] < x && x - c.Positionen[1] <= c.FixedSize && c.Positionen[2] == 2 && c.Positionen[0] == y))
-                        Console.BackgroundColor = ConsoleColor.Red;
+                    }
                     else
+                    {
                         Console.BackgroundColor = ConsoleColor.Green;
-
+                    }
                     Console.Write("  ");
                 }
 
@@ -57,50 +48,24 @@ namespace Schiffeversenken
 
         public static void AskForShipPositions()
         {
-            int[] positions;
-            /*Console.WriteLine("Wo soll das Schlachtschiff liegen?");
-            positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("Schlachtschiff", 5, positions));
+            AskForPositions("Schlachtschiff", 5);
 
-            Console.WriteLine("Wo soll das Kreuzer liegen?");
-            positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("Kreuzer", 4, positions));
+            AskForPositions("Kreuzer", 4);
+            AskForPositions("Kreuzer", 4);
 
-            Console.WriteLine("Wo soll das Kreuzer liegen?");
-            positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("Kreuzer", 4, positions));
+            AskForPositions("Zerstörer", 3);
+            AskForPositions("Zerstörer", 3);
+            AskForPositions("Zerstörer", 3);
 
-            Console.WriteLine("Wo soll das Zerstörer liegen?");
-            positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("Zerstörer", 3, positions));
-
-            Console.WriteLine("Wo soll das Zerstörer liegen?");
-            positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("Zerstörer", 3, positions));
-
-            Console.WriteLine("Wo soll das Zerstörer liegen?");
-            positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("Zerstörer", 3, positions));
-
-            Console.WriteLine("Wo soll das U-Boot liegen?");
-            positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("U-Boot", 2, positions));
-
-            Console.WriteLine("Wo soll das U-Boot liegen?");
-            positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("U-Boot", 2, positions));
-
-            Console.WriteLine("Wo soll das U-Boot liegen?");
-            positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("U-Boot", 2, positions));*/
-
-            Console.WriteLine("Wo soll das U-Boot liegen?");
-            positions = AskForPositions();
-            playerOne.Schiffe.Add(new Schiff("U-Boot", 2, positions));
+            AskForPositions("U-Boot", 2);
+            AskForPositions("U-Boot", 2);
+            AskForPositions("U-Boot", 2);
+            AskForPositions("U-Boot", 2);
         }
 
-        public static int[] AskForPositions(bool fix = true, int minValue = 0, int maxValue = 9)
+        public static void AskForPositions(String name, int size, int minValue = 0, int maxValue = 9, bool fix = true)
         {
+            Console.WriteLine($"Wo soll das {name} liegen? ({size + "px"})");
             int y, x, direction;
             Console.WriteLine("Bitte geben Sie die Y-Kordinate ein.");
             y = Convert.ToInt32(Console.ReadLine()) - (fix ? 1 : 0);
@@ -116,9 +81,64 @@ namespace Schiffeversenken
             if (y < minValue) y = minValue;
             if (direction < 1) direction = 1;
             if (direction > 4) direction = 4;
-            return new[] { y, x, direction };
+            int[] positions = new[] { y, x, direction };
+
+            bool errorEntry = false;
+            
+            if (direction == 1 || direction == 2)
+            {
+                for (int colissionX = x; colissionX < (direction == 1 ? x + size : x - size); colissionX++)
+                {
+                    if (checkForColission(y, colissionX))
+                    {
+                        Console.WriteLine($"Auf dem Feld Y-{y} und X-{colissionX} befindet sich schon ein Schiff!");
+                        errorEntry = true;
+                        AskForPositions(name, size);
+                        break;
+                    }
+                }
+            } else
+            {
+                for (int colissionY = y; colissionY < (direction == 4 ? y + size : y - size); colissionY++)
+                {
+                    if (checkForColission(colissionY, x))
+                    {
+                        Console.WriteLine($"Auf dem Feld Y-{colissionY} und X-{x} befindet sich schon ein Schiff!");
+                        errorEntry = true;
+                        AskForPositions(name, size);
+                        break;
+                    }
+                }
+            }
+
+            if (errorEntry) return;
+            playerOne.Schiffe.Add(new Schiff(name, size, positions));
         }
 
+        public static bool checkForColission(int y, int x)
+        {
+            if (playerOne.Schiffe.Any(c => c.Positionen[0] == y && c.Positionen[1] == x))
+                return true;
+            else if (playerOne.Schiffe.Any(c =>
+                         c.Positionen[0] < y && y - c.Positionen[0] >= c.FixedSize && c.Positionen[2] == 4 &&
+                         c.Positionen[1] == x)) // Unten
+                return true;
+            else if (playerOne.Schiffe.Any(c =>
+                         c.Positionen[0] > y && c.Positionen[0] - y <= c.FixedSize && c.Positionen[2] == 3 &&
+                         c.Positionen[1] == x)) // Oben
+                return true;
+            else if (playerOne.Schiffe.Any(c =>
+                         c.Positionen[1] > x && c.Positionen[1] - x <= c.FixedSize && c.Positionen[2] == 1 &&
+                         c.Positionen[0] == y))
+                return true;
+            else if (playerOne.Schiffe.Any(c =>
+                         c.Positionen[1] < x && x - c.Positionen[1] <= c.FixedSize && c.Positionen[2] == 2 &&
+                         c.Positionen[0] == y))
+                return true;
+            else
+                return false;
+        }
+        
         public class Player
         {
             private string _name;
