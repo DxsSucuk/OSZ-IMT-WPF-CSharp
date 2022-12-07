@@ -81,7 +81,7 @@ namespace Schiffeversenken
             if (y < minValue) y = minValue;
             if (direction < 1) direction = 1;
             if (direction > 4) direction = 4;
-            int[] positions = new[] { y, x, direction };
+            int[] positions = { y, x, direction };
 
             bool errorEntry = false;
             
@@ -91,7 +91,7 @@ namespace Schiffeversenken
                 {
                     if (checkForColission(y, colissionX))
                     {
-                        Console.WriteLine($"Auf dem Feld Y-{y} und X-{colissionX} befindet sich schon ein Schiff!");
+                        Console.WriteLine($"Auf dem Feld Y-{(y + 1) + ""} und X-{(colissionX + 1) + ""} befindet sich schon ein Schiff!");
                         errorEntry = true;
                         AskForPositions(name, size);
                         break;
@@ -103,7 +103,7 @@ namespace Schiffeversenken
                 {
                     if (checkForColission(colissionY, x))
                     {
-                        Console.WriteLine($"Auf dem Feld Y-{colissionY} und X-{x} befindet sich schon ein Schiff!");
+                        Console.WriteLine($"Auf dem Feld Y-{(colissionY + 1) + ""} und X-{(x + 1) + ""} befindet sich schon ein Schiff!");
                         errorEntry = true;
                         AskForPositions(name, size);
                         break;
