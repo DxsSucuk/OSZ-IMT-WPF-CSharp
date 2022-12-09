@@ -10,8 +10,8 @@ namespace Schiffeversenken
 
         public static void Main(String[] args)
         {
-            ////AskForName();
-            ////showCurrentMap();
+            AskForName();
+            showCurrentMap();
             AskForShipPositions();
             showCurrentMap();
         }
@@ -117,26 +117,22 @@ namespace Schiffeversenken
 
         public static bool checkForColission(int y, int x)
         {
-            if (playerOne.Schiffe.Any(c => c.Positionen[0] == y && c.Positionen[1] == x))
-                return true;
-            else if (playerOne.Schiffe.Any(c =>
+            if (playerOne.Schiffe.Any(c => c.Positionen[0] == y && c.Positionen[1] == x) || // Direkte Position.
+                playerOne.Schiffe.Any(c =>
                          c.Positionen[0] < y && y - c.Positionen[0] >= c.FixedSize && c.Positionen[2] == 4 &&
-                         c.Positionen[1] == x)) // Unten
-                return true;
-            else if (playerOne.Schiffe.Any(c =>
+                         c.Positionen[1] == x) || // Unten
+                playerOne.Schiffe.Any(c =>
                          c.Positionen[0] > y && c.Positionen[0] - y <= c.FixedSize && c.Positionen[2] == 3 &&
-                         c.Positionen[1] == x)) // Oben
-                return true;
-            else if (playerOne.Schiffe.Any(c =>
+                         c.Positionen[1] == x) || // Oben
+                playerOne.Schiffe.Any(c =>
                          c.Positionen[1] > x && c.Positionen[1] - x <= c.FixedSize && c.Positionen[2] == 1 &&
-                         c.Positionen[0] == y))
-                return true;
-            else if (playerOne.Schiffe.Any(c =>
+                         c.Positionen[0] == y) || //Rechts
+                playerOne.Schiffe.Any(c =>
                          c.Positionen[1] < x && x - c.Positionen[1] <= c.FixedSize && c.Positionen[2] == 2 &&
-                         c.Positionen[0] == y))
+                         c.Positionen[0] == y)) // Links
                 return true;
-            else
-                return false;
+            
+            return false;
         }
         
         public class Player
@@ -149,10 +145,7 @@ namespace Schiffeversenken
                 this._name = name;
             }
 
-            public String Name
-            {
-                get => _name;
-            }
+            public String Name => _name;
         }
 
         public class Schiff
@@ -168,20 +161,10 @@ namespace Schiffeversenken
                 Positionen = positionen;
             }
 
-            public String Name
-            {
-                get => _name;
-            }
+            public String Name => _name;
+            public int Size => _size;
 
-            public int Size
-            {
-                get => _size;
-            }
-
-            public int FixedSize
-            {
-                get => _size - 1;
-            }
+            public int FixedSize => _size - 1;
         }
     }
 }
