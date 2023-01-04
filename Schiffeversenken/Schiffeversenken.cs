@@ -8,7 +8,7 @@ namespace Schiffeversenken
     {
         private static Player playerOne = new Player("test");
 
-        public static void Main(String[] args)
+        public static void main(String[] args)
         {
             AskForName();
             showCurrentMap();
